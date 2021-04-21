@@ -107,6 +107,13 @@ namespace ToDoList.Controllers
             {
                 return HttpNotFound();
             }
+            string userId = User.Identity.GetUserId();
+            ApplicationUser user = db.Users.FirstOrDefault(
+                x => x.Id == userId);
+            if (toDo.User != user)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             return View(toDo);
         }
 
