@@ -22,14 +22,18 @@ namespace ToDoList.Controllers
             return View();
         }
 
-        public ActionResult BuildToDoTable()
+        private IEnumerable<toDo> GetToDoes()
         {
             string userId = User.Identity.GetUserId();
             ApplicationUser user = db.Users.FirstOrDefault(
                 x => x.Id == userId);
-            return PartialView("_ToDoTable",
-                db.toDos.ToList().Where(
-                x => x.User == user));
+            return db.toDos.ToList().Where(x => x.User == user);
+        }
+
+        public ActionResult BuildToDoTable()
+        {
+            
+            return PartialView("_ToDoTable", GetToDoes());
         }
 
         // GET: toDoes/Details/5
@@ -69,6 +73,23 @@ namespace ToDoList.Controllers
                 db.toDos.Add(toDo);
                 db.SaveChanges();
                 return RedirectToAction("Index");
+            }
+
+            return View(toDo);
+        }
+
+        public ActionResult AjaxCreate([Bind(Include = "Id,Desc")] toDo toDo)
+        {
+            if (ModelState.IsValid)
+            {
+                string userId = User.Identity.GetUserId();
+                ApplicationUser user = db.Users.FirstOrDefault(
+                    x => x.Id == userId);
+                toDo.User = user;
+                toDo.Done = false;
+                db.toDos.Add(toDo);
+                db.SaveChanges();
+                return PartialView("_ToDoTable", GetToDoes());
             }
 
             return View(toDo);
