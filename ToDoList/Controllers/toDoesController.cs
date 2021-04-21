@@ -27,9 +27,23 @@ namespace ToDoList.Controllers
             string userId = User.Identity.GetUserId();
             ApplicationUser user = db.Users.FirstOrDefault(
                 x => x.Id == userId);
-            return db.toDos.ToList().Where(x => x.User == user);
-        }
+            IEnumerable<toDo> myToDos = db.toDos.ToList().Where(x => x.User == user);
+            
+            int completeCount = 0;
 
+            foreach(toDo toDo in myToDos) 
+            {
+                if (toDo.Done)
+                {
+                    completeCount++;
+                }
+            }
+
+            ViewBag.Percent = 100f * ((float)completeCount / (float)myToDos.Count());
+
+            return myToDos;
+
+        }
         public ActionResult BuildToDoTable()
         {
             
@@ -114,6 +128,7 @@ namespace ToDoList.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             return View(toDo);
         }
 

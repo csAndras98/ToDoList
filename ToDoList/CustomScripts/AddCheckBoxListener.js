@@ -12,7 +12,7 @@
                 value: value
             },
             type: 'POST',
-            success: function (resukt) {
+            success: function (result) {
                 $('#tableDiv').html(result);
             }
         });

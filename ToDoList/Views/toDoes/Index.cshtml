@@ -16,6 +16,7 @@
     }))
     {
         <div class="form-group">
+            @Html.AntiForgeryToken()
             <div>
                 @Html.EditorFor(model => model.Desc, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Desc, "", new { @class = "text-danger" })
